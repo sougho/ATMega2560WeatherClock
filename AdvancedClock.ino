@@ -1,50 +1,29 @@
-#include <DHT.h>
-#include <DHT_U.h>
-
-#include <glcd.h>
-#include <glcd_Buildinfo.h>
-#include <glcd_Config.h>
-#include <fonts/allFonts.h>
-
 #include <Arduino.h>
 #include <Wire.h>
 
 #include "BMPUtils.h"
 #include "DHT22Utils.h"
+#include "DisplayUtils.h"
 
-#define DHTPIN 14
-#define DHTTYPE DHT22
-DHT dht(DHTPIN, DHTTYPE);
+#define DHTPIN_PRIMARY 14
 
 BMPUtils bmpManager;
-DHT22Utils dht22Manager;
+DHT22Utils dht22ManagerPrimary(DHTPIN_PRIMARY);
 
 void setup() {
+  
+  DisplayUtils::init();
+  DisplayUtils::createLayout();
 
-  GLCD.Init();
-  createLayout();
-  GLCD.SelectFont(System5x7);
-  
-  dht22Manager.init();
-  
   Wire.begin();
   bmpManager.initBMP();
 
-}
+  DisplayUtils::printCalender();
 
-// Layout Defintions
-#define RIGHT_RECTANGLE_DIVIDER 38
-#define ORIGIN 0
-
-void createLayout() {
-  GLCD.DrawRect(ORIGIN, ORIGIN, GLCD.Width / 2 - 1, GLCD.Height -1);
-  GLCD.DrawRect(GLCD.CenterX - 1, 0, GLCD.Width/2 , GLCD.Height -1);
-  GLCD.DrawLine(GLCD.CenterX - 1, RIGHT_RECTANGLE_DIVIDER, GLCD.Width -2 , RIGHT_RECTANGLE_DIVIDER);
 }
 
 
 void loop() {
-
   printHumidity(65, 2);
   printPressure(65, 11);
   printDuePoint(65, 30);
@@ -60,7 +39,7 @@ void printCurrentTime(int hour, int min, int sec) {
 }
 
 void printHumidity(int xOrigin, int yOrigin) {
- DHT22Data data = dht22Manager.readRHValue();
+ DHT22Data data = dht22ManagerPrimary.readRHValue();
  GLCD.CursorToXY(xOrigin, yOrigin);
  if (data.msg != NULL) {
    printError(data.msg);

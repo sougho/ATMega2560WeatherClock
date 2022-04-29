@@ -1,7 +1,6 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
-#define DHTPIN 14
 #define DHTTYPE DHT22
 
 struct DHT22Data {
@@ -21,8 +20,8 @@ struct DHT22Data {
 class DHT22Utils {
 
   private:
-    DHT * _m_dht = new DHT(DHTPIN, DHTTYPE);
+    DHT * _m_dht;
   public:
-    void init();
+    DHT22Utils(int pin);
     DHT22Data readRHValue();
 };
