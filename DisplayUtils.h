@@ -9,4 +9,6 @@ class DisplayUtils {
     static void createLayout();
     static void printCalender(int, int, int);
     static void printCurrentTime(int, int, int, boolean);
+    static void displayClockPageOne();
+    static void displayClockInitPage();
 };
