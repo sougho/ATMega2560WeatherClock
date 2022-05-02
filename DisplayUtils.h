@@ -7,5 +7,6 @@ class DisplayUtils {
   public:
     static void init();
     static void createLayout();
-    static void printCalender();
+    static void printCalender(int, int, int);
+    static void printCurrentTime(int, int, int, boolean);
 };

@@ -2,34 +2,24 @@
 
 #define ORIGIN 0
 #define RIGHT_RECTANGLE_DIVIDER 39
+#define CALENDER_DATE_SEPARATOR 3
+#define CALENDER_NO_COLS 7
+#define DIGIT_FONT_WIDTH 5
+#define DIGIT_FONT_HEIGHT 7
+#define CALENDER_LINE_SEPARATOR 2
+#define VERTICAL_OFFSET 10
 
-static const uint8_t OneBitmap [] PROGMEM = {
- 9, // width
- 9, // height
+char   daysOfWeek[7][2] = {"M", "T", "W", "T", "F", "S", "S"};
 
-  /* page 0 (lines 0-7) */
-  0xc0,0x30,0x8,0x4,0x2,0xf2,0xe2,0xc2,0x82,0x4,0x8,0x30,0xc0,0x0,0x0,0x0,
-  0x0,0x0,0x0,0xc0,0xf0,0xf8,0xf8,0xf8,0xf0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,
-  
-  /* page 1 (lines 8-15) */
-  0x1,0x6,0x8,0x10,0xa0,0xa7,0xa3,0xa1,0xa0,0x10,0x8,0x6,0x1,0x0,0x0,0x0,
-  0x80,0xf0,0xfe,0xff,0xff,0x1f,0x3,0x1f,0xff,0xff,0xfe,0xf0,0x80,0x0,0x0,0x0,
-  
-  /* page 2 (lines 16-23) */
-  0x70,0x8c,0x2,0x1,0xf8,0x88,0x88,0x88,0xf8,0x1,0x2,0x8c,0x70,0x0,0xe0,0xfc,
-  0xff,0xff,0x7f,0x7f,0x78,0x78,0x78,0x78,0x78,0x7f,0x7f,0xff,0xff,0xfc,0xe0,0x0,
-  
-  /* page 3 (lines 24-31) */
-  0x0,0x1,0x2,0x4,0x8,0x8,0x8,0x8,0x8,0x4,0x2,0x1,0x18,0x3f,0x3f,0x3f,
-  0xf,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0xf,0x3f,0x3f,0x3f,
-};
+
 
 // Image_t bmOne = OneBitmap;
 
 void DisplayUtils::createLayout(void) {
-  GLCD.DrawRect(ORIGIN, ORIGIN, GLCD.Width / 2 - 1, GLCD.Height - 1);
-  GLCD.DrawRect(GLCD.CenterX - 1, 0, GLCD.Width / 2 , GLCD.Height - 1);
-  GLCD.DrawLine(GLCD.CenterX - 1, RIGHT_RECTANGLE_DIVIDER, GLCD.Width - 2 , RIGHT_RECTANGLE_DIVIDER);
+  // GLCD.DrawRect(ORIGIN, ORIGIN, GLCD.Width / 2 - 1, GLCD.Height - 1);
+  // GLCD.DrawRect(GLCD.CenterX - 1, 0, GLCD.Width / 2 , GLCD.Height - 1);
+  GLCD.DrawLine(90, 0, 90, 63);
+  GLCD.DrawLine(90, 31, 127, 31);
 }
 
 void DisplayUtils::init() {
@@ -37,6 +27,45 @@ void DisplayUtils::init() {
   GLCD.SelectFont(System5x7);
 }
 
-void DisplayUtils::printCalender() {
-    GLCD.DrawBitmap(OneBitmap, 0, 0, 0);
+void DisplayUtils::printCalender(int originDayOfWeek, int daysInMonth, int currentDate) {
+    for (int i = 0; i< 7; i++) {
+      GLCD.CursorToXY(i *  (CALENDER_DATE_SEPARATOR + 2 * DIGIT_FONT_WIDTH) + DIGIT_FONT_WIDTH, 1);
+      GLCD.print(daysOfWeek[i]);
+    }
+    for (int i = originDayOfWeek; i < daysInMonth + originDayOfWeek ; i++) {
+      GLCD.CursorToXY((i%CALENDER_NO_COLS) *  (CALENDER_DATE_SEPARATOR + 2* DIGIT_FONT_WIDTH) + ((i-originDayOfWeek) < 9?DIGIT_FONT_WIDTH:0) , 
+        VERTICAL_OFFSET + (i/7) * (  DIGIT_FONT_HEIGHT + CALENDER_LINE_SEPARATOR));
+        if (currentDate == (i  - originDayOfWeek + 1)) 
+          GLCD.print("\"");
+        else 
+          GLCD.print(i  - originDayOfWeek + 1);
+    }
+}
+
+void DisplayUtils::printCurrentTime(int hr24, int mn, int ss, boolean is12Hr) {
+  GLCD.FillRect(90,63, 126, 126, WHITE);
+  GLCD.SelectFont(Arial_bold_14);
+
+  // Clear the hour area
+  GLCD.CursorToXY(92, 38);
+  GLCD.print("       ");
+  
+  GLCD.CursorToXY(92, 38);
+  int adjHr = ((is12Hr)?  (hr24 > 12)? hr24-12 : hr24   :  hr24);
+  GLCD.print((adjHr < 10)? "0" + String(adjHr) : String(adjHr));
+  GLCD.print(":");
+  GLCD.print((mn < 10)? "0" + String(mn) : String(mn));
+
+  // Clear the seconds area
+  
+  GLCD.CursorToXY(97, 49);
+  GLCD.print("   ");
+  GLCD.CursorToXY(97, 49);
+  GLCD.print((ss < 10)? "0" + String(ss) : String(ss));
+ 
+  GLCD.SelectFont(System5x7);
+  if ((is12Hr) && (hr24 > 12)) {
+    GLCD.CursorToXY(116, 53);
+    GLCD.print("PM");
+  }
 }

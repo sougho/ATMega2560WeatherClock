@@ -4,6 +4,11 @@
 #include "BMPUtils.h"
 #include "DHT22Utils.h"
 #include "DisplayUtils.h"
+#include "Time.h"
+
+#include <DS3231.h>
+
+long secCounter = 0;
 
 #define DHTPIN_PRIMARY 14
 
@@ -11,6 +16,8 @@ BMPUtils bmpManager;
 DHT22Utils dht22ManagerPrimary(DHTPIN_PRIMARY);
 
 void setup() {
+
+  Serial.begin(57600);
   
   DisplayUtils::init();
   DisplayUtils::createLayout();
@@ -18,16 +25,34 @@ void setup() {
   Wire.begin();
   bmpManager.initBMP();
 
-  DisplayUtils::printCalender();
+  // setToCompileTime();
+  // delay(100);
+  
+  AClkTime currTime = readCurrentTimeValue();
+  DisplayUtils::printCalender(currTime.firstDayOfMonth, 31, currTime.day);
+  DisplayUtils::printCurrentTime(currTime.hr24,currTime.mn, currTime.ss, true);
 
+   printHumidity(92, 2);
+   printPressure(92, 11);
 }
 
 
 void loop() {
-  printHumidity(65, 2);
-  printPressure(65, 11);
-  printDuePoint(65, 30);
-  delay(30000);
+  delay(1000);
+  AClkTime currTime = readCurrentTimeValue();
+  DisplayUtils::printCalender(currTime.firstDayOfMonth, 31, currTime.day);
+  DisplayUtils::printCurrentTime(currTime.hr24,currTime.mn, currTime.ss, true);
+
+  if (secCounter == 30) {
+    printHumidity(92, 2);
+    printPressure(92, 11);
+    secCounter = 0;
+  }
+
+  if ((currTime.hr24 == 0) && (currTime.mn == 0) && ( currTime.ss <=2))
+  {
+    DisplayUtils::printCalender(currTime.firstDayOfMonth, 31, currTime.day);
+  }
 }
 
 void printError(String s) {
@@ -35,8 +60,6 @@ void printError(String s) {
   GLCD.print(s);
 }
 
-void printCurrentTime(int hour, int min, int sec) {
-}
 
 void printHumidity(int xOrigin, int yOrigin) {
  DHT22Data data = dht22ManagerPrimary.readRHValue();
@@ -44,7 +67,7 @@ void printHumidity(int xOrigin, int yOrigin) {
  if (data.msg != NULL) {
    printError(data.msg);
  } else {
-  GLCD.print("H:" + String(data.rh,1));
+  GLCD.print("H:" + String(data.rh,0));
  }
 }
 
@@ -54,9 +77,9 @@ void printPressure(int xOrigin, int yOrigin) {
     printError(data.msg);
   } else {
     GLCD.CursorToXY(xOrigin, yOrigin);
-    GLCD.print("T:" + String(data.temp,1));
+    GLCD.print("T:" + String(data.temp,0));
     GLCD.CursorToXY(xOrigin, yOrigin + 10);
-    GLCD.print("P:" + String(data.pressure,1));
+    GLCD.print("P:" + String(data.pressure, 0));
   }
 }
 
