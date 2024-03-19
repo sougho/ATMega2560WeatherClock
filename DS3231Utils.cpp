@@ -40,9 +40,9 @@ void setToCompileTime() {
 
   _s_clk.setHour(hr);
   _s_clk.setMinute(mn);
-  _s_clk.setSecond(sec );
-  _s_clk.setDate(1);
-  _s_clk.setDoW(6);
-  _s_clk.setMonth(5);
-  _s_clk.setYear(22);
+  _s_clk.setSecond(sec);
+  _s_clk.setDate(19);
+  _s_clk.setDoW(0);
+  _s_clk.setMonth(3);
+  _s_clk.setYear(24);
 }
