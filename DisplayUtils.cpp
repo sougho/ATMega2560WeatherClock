@@ -14,6 +14,8 @@
 
 #define DHTPIN_PRIMARY 14
 
+#define SENSOR_READ_INTERVAL 300 /* 5 minutes */
+
 
 BMPUtils bmpManager;
 DHT22Utils dht22ManagerPrimary(DHTPIN_PRIMARY);
@@ -31,34 +33,42 @@ void printError(String s) {
   GLCD.print(s);
 }
 
-void printCurrentTime2(int hr24, int mn, int ss, boolean is12Hr) {
+void printCurrentTime2(int hr24, int mn, int ss, int month, int currentDate, int year,  boolean is12Hr) {
   
-  GLCD.SelectFont(fixednums7x15);
+  GLCD.SelectFont(Verdana24);
 
   // Clear the hour area
   GLCD.CursorToXY(20, 10);
   GLCD.print("       ");
   
-  GLCD.CursorToXY(20, 10);
+  GLCD.CursorToXY(5, 10);
   
   int adjHr = ((is12Hr)?  (hr24 > 12)? hr24-12 : (hr24 == 0)? 12 : hr24   :  hr24);
   
   GLCD.print((adjHr < 10)? "0" + String(adjHr) : String(adjHr));
   GLCD.print(":");
   GLCD.print((mn < 10)? "0" + String(mn) : String(mn));
-
-  // Clear the seconds area
-  
-//  GLCD.CursorToXY(97, 49);
-//  GLCD.print("   ");
-//  GLCD.CursorToXY(97, 49);
+  GLCD.print(":");
   GLCD.print((ss < 10)? "0" + String(ss) : String(ss));
  
   GLCD.SelectFont(Wendy3X5);
   if ((is12Hr) && (hr24 > 12)) {
-    GLCD.CursorToXY(116, 53);
+    GLCD.CursorToXY(116, 20);
     GLCD.print("PM");
   }
+    GLCD.CursorToXY(18, 46);
+
+    GLCD.SelectFont(Arial_14);
+    GLCD.print(currentDate);
+    if (currentDate > 9) { 
+      GLCD.print(" ");
+    } else {
+      GLCD.print("  ");
+    }
+    GLCD.print(months[month -1]);
+    GLCD.print(" ");
+    GLCD.print("20");
+    GLCD.print(year);
 }
 
 
@@ -187,7 +197,7 @@ void DisplayUtils::displayClockPageOne() {
   }
   DisplayUtils::printCurrentTime(currTime.hr24, currTime.mn, currTime.ss, true);
   secCounter++;
-  if (secCounter == 30) {
+  if (secCounter == SENSOR_READ_INTERVAL) {
     printHumidity(92, 2);
     printPressure(92, 11);
     secCounter = 0;
@@ -206,7 +216,8 @@ void DisplayUtils::displayClockInitPage() {
  *  PAGE 2 
  */
  
-void DisplayUtils::displayClockPage2() {
+void DisplayUtils::displayClockPageTwo() {
+  //GLCD.ClearScreen();
   AClkTime currTime = readCurrentTimeValue();
-  printCurrentTime2(currTime.hr24, currTime.mn, currTime.ss, true);
+  printCurrentTime2(currTime.hr24, currTime.mn, currTime.ss, currTime.month, currTime.day, currTime.year, true);
 }

@@ -33,7 +33,7 @@ void setup() {
   Serial.begin(57600);
 
   DisplayUtils::init();
-  DisplayUtils::createLayout();
+  //DisplayUtils::createLayout();
 
   Wire.begin();
   bmpManager.initBMP();
@@ -41,7 +41,7 @@ void setup() {
 //  setToCompileTime();
 //  delay(100);
 
-  DisplayUtils::displayClockInitPage();
+ DisplayUtils::displayClockInitPage();
 
   pinMode(2, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(2), oneSecondISR, FALLING);
@@ -49,7 +49,7 @@ void setup() {
   _s_clk.enableOscillator(true, false, 0);
 
   displayFunctions[0] = DisplayUtils::displayClockPageOne;
-  displayFunctions[1] = DisplayUtils::displayClockPage2;
+  displayFunctions[1] = DisplayUtils::displayClockPageTwo;
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(SWITCH_1_PIN, INPUT_PULLUP);
   pinMode(SWITCH_2_PIN, INPUT_PULLUP);
