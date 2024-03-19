@@ -1,0 +1,17 @@
+Clock Documentation
+========================
+
+Mega Side Connector 
+SCLK
+SDA 
+Serial (DHT)
+Buzzer
+Sw1
+Sw2
+Sw3
+.
+.
+.
+Other End : 
+GND 
+VCC 
