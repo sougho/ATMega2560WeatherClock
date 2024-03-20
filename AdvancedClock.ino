@@ -55,11 +55,10 @@ void setup() {
   pinMode(SWITCH_2_PIN, INPUT_PULLUP);
   pinMode(SWITCH_3_PIN, INPUT_PULLUP);
 
-  digitalWrite(BUZZER_PIN, 1);
-  delay(200);
-  digitalWrite(BUZZER_PIN, 0);
+//  digitalWrite(BUZZER_PIN, 1);
+//  delay(200);
+//  digitalWrite(BUZZER_PIN, 0);
 }
-
 
 void loop() {
   if (intFired) {
@@ -68,5 +67,22 @@ void loop() {
     else
       displayFunctions[0]();
     intFired = false;
+  }
+  int val = digitalRead(SWITCH_1_PIN);
+  if (val == 0) {
+    delay(200);
+    Serial.print("SW1 Pressed");
+  }
+
+  val = digitalRead(SWITCH_2_PIN);
+  if (val == 0) {
+    delay(300);
+    Serial.print("SW2 Pressed");
+  }
+ 
+  val = digitalRead(SWITCH_3_PIN);
+  if (val == 0) {
+    delay(200);
+    Serial.print("SW3 Pressed");
   }
 }
