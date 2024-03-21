@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Wire.h>
+#include <DS3231.h>
 
 
 #include "DisplayUtils.h"
@@ -8,9 +9,7 @@
 #include "PinDefs.h"
 #include "EEPROM.h"
 
-
-#include <DS3231.h>
-
+void handleSwitchValueRead(short val, short switchId);
 
 extern boolean intFired;
 extern BMPUtils bmpManager;
@@ -21,7 +20,9 @@ void oneSecondISR();
 // Display page functions
 typedef void (*DISPLAY_FUNCTION_TYPE) (void);
 
-DISPLAY_FUNCTION_TYPE displayFunctions[4];
+#define TOTALMODES 6
+
+DISPLAY_FUNCTION_TYPE functionalModes[TOTALMODES];
 
 int currentDisplayedPage = 0;
 
@@ -48,41 +49,33 @@ void setup() {
 
   _s_clk.enableOscillator(true, false, 0);
 
-  displayFunctions[0] = DisplayUtils::displayClockPageOne;
-  displayFunctions[1] = DisplayUtils::displayClockPageTwo;
+  functionalModes[0] = DisplayUtils::displayClockPageOne;
+  functionalModes[1] = DisplayUtils::displayClockPageTwo;
+  
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(SWITCH_1_PIN, INPUT_PULLUP);
   pinMode(SWITCH_2_PIN, INPUT_PULLUP);
   pinMode(SWITCH_3_PIN, INPUT_PULLUP);
 
-//  digitalWrite(BUZZER_PIN, 1);
-//  delay(200);
-//  digitalWrite(BUZZER_PIN, 0);
+  digitalWrite(BUZZER_PIN, 1);
+  delay(200);
+  digitalWrite(BUZZER_PIN, 0);
 }
 
 void loop() {
   if (intFired) {
     if ( currentDisplayedPage < 4)
-      displayFunctions[currentDisplayedPage]();
+      functionalModes[currentDisplayedPage]();
     else
-      displayFunctions[0]();
+      functionalModes[0]();
     intFired = false;
   }
   int val = digitalRead(SWITCH_1_PIN);
-  if (val == 0) {
-    delay(200);
-    Serial.print("SW1 Pressed");
-  }
+  handleSwitchValueRead(val, 1);
 
   val = digitalRead(SWITCH_2_PIN);
-  if (val == 0) {
-    delay(300);
-    Serial.print("SW2 Pressed");
-  }
+  handleSwitchValueRead(val, 2);
  
   val = digitalRead(SWITCH_3_PIN);
-  if (val == 0) {
-    delay(200);
-    Serial.print("SW3 Pressed");
-  }
+  handleSwitchValueRead(val, 3);
 }
