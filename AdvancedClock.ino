@@ -8,12 +8,22 @@
 #include "BMPUtils.h"
 #include "PinDefs.h"
 #include "EEPROM.h"
+#include "Modes.h"
+#include "ModeHandlers.h"
+#include "MainPage.h"
+#include "LargeFormatTime.h"
+
 
 void handleSwitchValueRead(short val, short switchId);
+void displayClockInitPage();
+void createLayout(void);
+void displayInit();
+void initTransitionTable();
 
 extern boolean intFired;
 extern BMPUtils bmpManager;
 extern DS3231 _s_clk;
+extern short currentMode;
 
 void oneSecondISR();
 
@@ -22,7 +32,7 @@ typedef void (*DISPLAY_FUNCTION_TYPE) (void);
 
 #define TOTALMODES 6
 
-DISPLAY_FUNCTION_TYPE functionalModes[TOTALMODES];
+ModeHandler* functionalModes[NUM_STATES];
 
 int currentDisplayedPage = 0;
 
@@ -33,24 +43,24 @@ void setup() {
   
   Serial.begin(57600);
 
-  DisplayUtils::init();
-  //DisplayUtils::createLayout();
-
   Wire.begin();
   bmpManager.initBMP();
 
 //  setToCompileTime();
 //  delay(100);
-
- DisplayUtils::displayClockInitPage();
+ 
+  displayInit();
+  createLayout();
+  displayClockInitPage();
 
   pinMode(2, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(2), oneSecondISR, FALLING);
 
   _s_clk.enableOscillator(true, false, 0);
 
-  functionalModes[0] = DisplayUtils::displayClockPageOne;
-  functionalModes[1] = DisplayUtils::displayClockPageTwo;
+  functionalModes[0] = new MainPage();
+  functionalModes[1] = new LargeFormatTime();
+  initTransitionTable();
   
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(SWITCH_1_PIN, INPUT_PULLUP);
@@ -64,10 +74,10 @@ void setup() {
 
 void loop() {
   if (intFired) {
-    if ( currentDisplayedPage < 4)
-      functionalModes[currentDisplayedPage]();
+    if (currentMode < NUM_STATES)
+      functionalModes[currentMode]->handleEvent(RENDER);
     else
-      functionalModes[0]();
+      functionalModes[0]->handleEvent(RENDER);
     intFired = false;
   }
   int val = digitalRead(SWITCH_1_PIN);

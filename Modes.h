@@ -1,1 +1,25 @@
+#ifndef __MODES_H_
+#define __MODES_H_
 
+enum ClockModes {
+  DATE_CALENNDER_WEATHER = 0,
+  LARGE_FORMAT_DATE,
+  WEATHER_DETAILS,
+  WEATHER_TRENDS,
+  SET_TIME,
+  SET_ALARMS,
+  NUM_STATES
+};
+
+enum EVENTS {
+  SW1_SHORT=0,
+  SW1_LONG,
+  SW2_SHORT,
+  SW2_LONG,
+  SW3_SHORT,
+  SW3_LONG,
+  RENDER,
+  NUM_EVENTS
+};
+
+#endif
