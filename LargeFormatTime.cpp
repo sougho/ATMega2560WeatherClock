@@ -5,8 +5,9 @@
 #include "DisplayUtils.h"
 
 extern char months[12][4];
+char daysOfWeekLong[7][4] = {"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
 
- void printCurrentTime2(int hr24, int mn, int ss, int month, int currentDate, int year,  boolean is12Hr) {
+ void printCurrentTime2(int hr24, int mn, int ss, int month, int currentDate, int year, int dayOfWeek, boolean is12Hr) {
   
   GLCD.SelectFont(Verdana24);
   GLCD.FillRect(5,10, 114, 20, 0);
@@ -26,9 +27,11 @@ extern char months[12][4];
     GLCD.CursorToXY(116, 20);
     GLCD.print("PM");
   }
-    GLCD.CursorToXY(18, 46);
+    GLCD.CursorToXY(10, 46);
 
     GLCD.SelectFont(Arial_14);
+    GLCD.print(daysOfWeekLong[dayOfWeek]);
+    GLCD.print("  ");
     GLCD.print(currentDate);
     if (currentDate > 9) { 
       GLCD.print("  ");
@@ -46,5 +49,5 @@ extern char months[12][4];
     GLCD.ClearScreen();
   }
   AClkTime currTime = readCurrentTimeValue();
-  printCurrentTime2(currTime.hr24, currTime.mn, currTime.ss, currTime.month, currTime.day, currTime.year, true);
+  printCurrentTime2(currTime.hr24, currTime.mn, currTime.ss, currTime.month, currTime.day, currTime.year, currTime.dayOfWeek, true);
  }

@@ -67,9 +67,9 @@ void setup() {
   pinMode(SWITCH_2_PIN, INPUT_PULLUP);
   pinMode(SWITCH_3_PIN, INPUT_PULLUP);
 
-  digitalWrite(BUZZER_PIN, 1);
-  delay(200);
-  digitalWrite(BUZZER_PIN, 0);
+  // digitalWrite(BUZZER_PIN, 1);
+  // delay(200);
+  // digitalWrite(BUZZER_PIN, 0);
 }
 
 void loop() {
