@@ -3,6 +3,8 @@
 #include "BMPUtils.h"
 #include "DHT22Utils.h"
 #include "DisplayUtils.h"
+#include "EEPROM.h"
+#include "MemLocs.h"
 
 #define ORIGIN 0
 #define RIGHT_RECTANGLE_DIVIDER 39
@@ -178,6 +180,7 @@ void displayClockPageOne() {
     GLCD.ClearScreen();
     GLCD.SelectFont(Wendy3X5);
     displayClockInitPage();
+    EEPROM::writeEEPROM(CURR_DISPLAY_PAGE, 0);
   }
   displayClockPageOne();
  }

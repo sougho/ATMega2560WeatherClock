@@ -3,6 +3,8 @@
 #include "Modes.h"
 #include "LargeFormatTime.h"
 #include "DisplayUtils.h"
+#include "MemLocs.h"
+#include "EEPROM.h"
 
 extern char months[12][4];
 char daysOfWeekLong[7][4] = {"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
@@ -27,7 +29,7 @@ char daysOfWeekLong[7][4] = {"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
     GLCD.CursorToXY(116, 20);
     GLCD.print("PM");
   }
-    GLCD.CursorToXY(10, 46);
+    GLCD.CursorToXY(8, 46);
 
     GLCD.SelectFont(Arial_14);
     GLCD.print(daysOfWeekLong[dayOfWeek]);
@@ -47,6 +49,7 @@ char daysOfWeekLong[7][4] = {"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
  void LargeFormatTime::handleEvent(EVENTS event){
   if (event != RENDER) {
     GLCD.ClearScreen();
+    EEPROM::writeEEPROM(CURR_DISPLAY_PAGE, 1);
   }
   AClkTime currTime = readCurrentTimeValue();
   printCurrentTime2(currTime.hr24, currTime.mn, currTime.ss, currTime.month, currTime.day, currTime.year, currTime.dayOfWeek, true);

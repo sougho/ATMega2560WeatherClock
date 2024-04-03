@@ -1,7 +1,7 @@
 #include "EEPROM.h"
 #include <Arduino.h>
 
-void EEPROM::writeEEPROM(unsigned int eeaddress, unsigned short data ) {
+static void EEPROM::writeEEPROM(unsigned int eeaddress, unsigned short data ) {
   Wire.beginTransmission(EEPROM_I2C_ADDRESS);
   Wire.write((int)(eeaddress >> 8));      //writes the MSB
   Wire.write((int)(eeaddress & 0xFF));    //writes the LSB
@@ -9,7 +9,7 @@ void EEPROM::writeEEPROM(unsigned int eeaddress, unsigned short data ) {
   Wire.endTransmission();
 }
 
-unsigned short EEPROM::readEEPROM(unsigned int eeaddress ) {
+static unsigned short EEPROM::readEEPROM(unsigned int eeaddress ) {
   byte rdata = 0xFF;
   Wire.beginTransmission(EEPROM_I2C_ADDRESS);
   Wire.write((int)(eeaddress >> 8));      //writes the MSB

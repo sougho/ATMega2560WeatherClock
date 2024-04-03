@@ -4,6 +4,6 @@
 
 class EEPROM {
   public: 
-  void writeEEPROM(unsigned int eeaddress, unsigned short data );
-  unsigned short readEEPROM(unsigned int eeaddress );
+  static void writeEEPROM(unsigned int eeaddress, unsigned short data );
+  static unsigned short readEEPROM(unsigned int eeaddress );
 };

@@ -12,6 +12,7 @@
 #include "ModeHandlers.h"
 #include "MainPage.h"
 #include "LargeFormatTime.h"
+#include "MemLocs.h"
 
 
 void handleSwitchValueRead(short val, short switchId);
@@ -49,9 +50,11 @@ void setup() {
 //  setToCompileTime();
 //  delay(100);
  
+  
+
   displayInit();
-  createLayout();
-  displayClockInitPage();
+  // createLayout();
+  // displayClockInitPage();
 
   pinMode(2, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(2), oneSecondISR, FALLING);
@@ -61,15 +64,19 @@ void setup() {
   functionalModes[0] = new MainPage();
   functionalModes[1] = new LargeFormatTime();
   initTransitionTable();
+
+  currentMode = EEPROM::readEEPROM(CURR_DISPLAY_PAGE);
+  ModeHandler * currModeHandler = functionalModes[currentMode];
+  currModeHandler->handleEvent(SW1_SHORT);
   
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(SWITCH_1_PIN, INPUT_PULLUP);
   pinMode(SWITCH_2_PIN, INPUT_PULLUP);
   pinMode(SWITCH_3_PIN, INPUT_PULLUP);
 
-  // digitalWrite(BUZZER_PIN, 1);
-  // delay(200);
-  // digitalWrite(BUZZER_PIN, 0);
+  digitalWrite(BUZZER_PIN, 1);
+  delay(100);
+  digitalWrite(BUZZER_PIN, 0);
 }
 
 void loop() {
