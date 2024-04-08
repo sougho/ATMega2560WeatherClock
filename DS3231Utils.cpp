@@ -17,7 +17,9 @@ AClkTime readCurrentTimeValue() {
 
   currTime.day = _s_clk.getDate();
   currTime.month =  _s_clk.getMonth(century);
-  currTime.dayOfWeek = _s_clk.getDoW();
+  
+  // Monday goes as 7, whereas for us it's 0
+  currTime.dayOfWeek = _s_clk.getDoW() % 7;
   currTime.year =  _s_clk.getYear();
 
   currTime.firstDayOfMonth = currTime.computeFirstDayOfMonth();

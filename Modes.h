@@ -19,6 +19,7 @@ enum EVENTS {
   SW3_SHORT,
   SW3_LONG,
   RENDER,
+  FLASH,
   NUM_EVENTS
 };
 

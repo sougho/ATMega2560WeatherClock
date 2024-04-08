@@ -87,6 +87,7 @@ void printCalender(int originDayOfWeek, int month, int currentDate, int year) {
       GLCD.CursorToXY(i *  (CALENDER_DATE_SEPARATOR + 2 * DIGIT_FONT_WIDTH) + DIGIT_FONT_WIDTH, 1);
       GLCD.print(daysOfWeek[i]);
     }
+    
     for (int i = originDayOfWeek; i < dayInThisMonth + originDayOfWeek ; i++) {
       GLCD.CursorToXY((i%CALENDER_NO_COLS) *  (CALENDER_DATE_SEPARATOR + 2* DIGIT_FONT_WIDTH) + ((i-originDayOfWeek) < 9?DIGIT_FONT_WIDTH:0) +1, 
         VERTICAL_OFFSET + (i/7) * (  DIGIT_FONT_HEIGHT + CALENDER_LINE_SEPARATOR));
@@ -176,6 +177,9 @@ void displayClockPageOne() {
 
 
  void MainPage::handleEvent(EVENTS event){
+  if (event == FLASH) {
+    return;
+  }
   if (event != RENDER) {
     GLCD.ClearScreen();
     GLCD.SelectFont(Wendy3X5);

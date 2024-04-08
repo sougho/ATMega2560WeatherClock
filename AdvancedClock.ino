@@ -49,12 +49,8 @@ void setup() {
 
 //  setToCompileTime();
 //  delay(100);
- 
-  
 
   displayInit();
-  // createLayout();
-  // displayClockInitPage();
 
   pinMode(2, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(2), oneSecondISR, FALLING);
@@ -79,6 +75,9 @@ void setup() {
   digitalWrite(BUZZER_PIN, 0);
 }
 
+long delayCounterFlash = 0;
+#define FLASH_INTERVAL 10000L;
+
 void loop() {
   if (intFired) {
     if (currentMode < NUM_STATES)
@@ -95,4 +94,10 @@ void loop() {
  
   val = digitalRead(SWITCH_3_PIN);
   handleSwitchValueRead(val, 3);
+
+  // delayCounterFlash ++;
+  // if (delayCounterFlash == 10000L) {
+  //   functionalModes[currentMode]->handleEvent(FLASH);
+  //   delayCounterFlash = 0;
+  // }
 }
