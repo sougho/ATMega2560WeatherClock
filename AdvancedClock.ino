@@ -1,11 +1,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <DS3231.h>
-
-
 #include "DisplayUtils.h"
 #include "Time.h"
-#include "BMPUtils.h"
 #include "PinDefs.h"
 #include "EEPROM.h"
 #include "Modes.h"
@@ -13,6 +10,7 @@
 #include "MainPage.h"
 #include "LargeFormatTime.h"
 #include "MemLocs.h"
+#include "SensorData.h"
 
 
 void handleSwitchValueRead(short val, short switchId);
@@ -48,8 +46,9 @@ void setup() {
   bmpManager.initBMP();
 
 //  setToCompileTime();
-//  delay(100);
 
+  delay(100);
+  readSensors();
   displayInit();
 
   pinMode(2, INPUT_PULLUP);
@@ -76,15 +75,24 @@ void setup() {
 }
 
 long delayCounterFlash = 0;
-#define FLASH_INTERVAL 10000L;
+#define FLASH_INTERVAL 10000L
+
+// Sensor Read Event
+#define SENSOR_READ_INTERVAL 300
+int sensorIntervalCtr = 0;
 
 void loop() {
   if (intFired) {
+     intFired = false;
     if (currentMode < NUM_STATES)
       functionalModes[currentMode]->handleEvent(RENDER);
     else
       functionalModes[0]->handleEvent(RENDER);
-    intFired = false;
+    sensorIntervalCtr ++;
+    if (sensorIntervalCtr == SENSOR_READ_INTERVAL) {
+      sensorIntervalCtr = 0;
+      readSensors();
+    }
   }
   int val = digitalRead(SWITCH_1_PIN);
   handleSwitchValueRead(val, 1);

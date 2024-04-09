@@ -5,6 +5,7 @@
 #include "DisplayUtils.h"
 #include "EEPROM.h"
 #include "MemLocs.h"
+#include "SensorData.h"
 
 #define ORIGIN 0
 #define RIGHT_RECTANGLE_DIVIDER 39
@@ -15,50 +16,20 @@
 #define CALENDER_LINE_SEPARATOR 4
 #define VERTICAL_OFFSET 10
 
-#define DHTPIN_PRIMARY 14
-
-#define SENSOR_READ_INTERVAL 300 /* 5 minutes */
-
-
-BMPUtils bmpManager;
-DHT22Utils dht22ManagerPrimary(DHTPIN_PRIMARY);
-
 char   daysOfWeek[7][2] = {"M", "T", "W", "T", "F", "S", "S"};
 int daysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 char months[12][4] = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
 
-
-
-long secCounter = 0;
-
-
-void printError(String s) {
-  GLCD.CursorTo(15, 7);
-  GLCD.print(s);
-}
-
 void printHumidity(int xOrigin, int yOrigin) {
-  DHT22Data data = dht22ManagerPrimary.readRHValue();
-  GLCD.CursorToXY(xOrigin, yOrigin);
-  if (data.msg != NULL) {
-    printError(data.msg);
-  } else {
-    GLCD.print("H:" + String(data.rh, 1));
-//    GLCD.CursorToXY(xOrigin, yOrigin + 10);
-//    GLCD.print("T:" + String(data.temp, 1));
-  }
+   GLCD.CursorToXY(xOrigin, yOrigin);
+   GLCD.print("H:" + String(currentSensorData.humidity, 1));
 }
 
 void printPressure(int xOrigin, int yOrigin) {
-  BMPData data = bmpManager.getPressureTempData();
-  if (data.msg != NULL) {
-    printError(data.msg);
-  } else {
     GLCD.CursorToXY(xOrigin, yOrigin);
-    GLCD.print("T:" + String(data.temp, 1));
+    GLCD.print("T:" + String(currentSensorData.temparature, 1));
     GLCD.CursorToXY(xOrigin, yOrigin + 10);
-    GLCD.print("P:" + String(data.pressure, 1));
-  }
+    GLCD.print("P:" + String(currentSensorData.pressure, 1));
 }
 
 // Image_t bmOne = OneBitmap;
@@ -69,8 +40,6 @@ void createLayout(void) {
   GLCD.DrawLine(89, 0, 89, 63);
   GLCD.DrawLine(89, 31, 127, 31);
 }
-
-
 
 
 void printCalender(int originDayOfWeek, int month, int currentDate, int year) {
@@ -167,12 +136,10 @@ void displayClockPageOne() {
     printPressure(92, 11);
   }
   printCurrentTime(currTime.hr24, currTime.mn, currTime.ss, true);
-  secCounter++;
-  if (secCounter == SENSOR_READ_INTERVAL) {
-    printHumidity(92, 2);
-    printPressure(92, 11);
-    secCounter = 0;
-  }
+  
+  printHumidity(92, 2);
+  printPressure(92, 11);
+  
 }
 
 

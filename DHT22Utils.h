@@ -1,3 +1,6 @@
+#ifndef __DHT22UTILS_H_
+#define __DHT22UTILS_H_
+
 #include <DHT.h>
 #include <DHT_U.h>
 
@@ -25,3 +28,4 @@ class DHT22Utils {
     DHT22Utils(int pin);
     DHT22Data readRHValue();
 };
+#endif

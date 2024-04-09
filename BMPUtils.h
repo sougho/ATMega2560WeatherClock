@@ -1,3 +1,6 @@
+#ifndef __BMPUTILS_H_
+#define __BMPUTILS_H_
+
 #include <BMP180I2C.h>
 #define I2C_ADDRESS 0x77
 
@@ -21,3 +24,4 @@ class BMPUtils {
     BMPData initBMP();
     BMPData getPressureTempData();
 };
+#endif

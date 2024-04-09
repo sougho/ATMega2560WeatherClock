@@ -34,7 +34,7 @@ BMPData BMPUtils::getPressureTempData()  {
   } while (!_m_bmpSensor->hasValue());
 
   
-  Serial.print(_m_bmpSensor->getPressure());
+  Serial.print(String(_m_bmpSensor->getPressure()));
   
 
   return BMPData(temp, _m_bmpSensor->getPressure() / 100);

@@ -11,3 +11,8 @@ void displayInit() {
   GLCD.Init(WHITE);
   GLCD.SelectFont(Wendy3X5);
 }
+
+void printError(String s) {
+  GLCD.CursorTo(15, 7);
+  GLCD.print(s);
+}
