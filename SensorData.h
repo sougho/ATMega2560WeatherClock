@@ -5,13 +5,14 @@
 #include "DHT22Utils.h"
 
 const int pressureOrigin  = 900;
-struct CurrentSensorData {
+struct SensorData {
   float pressure; 
   float temparature;
   float humidity;
 };
 
-extern CurrentSensorData currentSensorData;
+extern SensorData currentSensorData;
+extern SensorData shortTermSensorTrend[24];
 
 void readSensors();
 #endif

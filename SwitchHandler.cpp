@@ -22,6 +22,7 @@ void handleSwitchValueRead(short val, short switchId) {
     
     } else if (swPressDuration[switchId-1] > 0){
       Serial.print("SW Long Pressed: " + String(switchId));
+
     }
     swPressDuration[switchId-1] = 0;
   }

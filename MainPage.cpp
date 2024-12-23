@@ -32,13 +32,19 @@ void printPressure(int xOrigin, int yOrigin) {
     GLCD.print("P:" + String(currentSensorData.pressure, 1));
 }
 
+void printDewPoint(int xOrigin, int yOrigin) {
+    GLCD.CursorToXY(xOrigin, yOrigin);
+    float dewPoint = currentSensorData.temparature - (100 - currentSensorData.humidity)/5;
+    GLCD.print("D:" + String(dewPoint, 1));
+}
+
 // Image_t bmOne = OneBitmap;
 
 void createLayout(void) {
   // GLCD.DrawRect(ORIGIN, ORIGIN, GLCD.Width / 2 - 1, GLCD.Height - 1);
   // GLCD.DrawRect(GLCD.CenterX - 1, 0, GLCD.Width / 2 , GLCD.Height - 1);
-  GLCD.DrawLine(89, 0, 89, 63);
-  GLCD.DrawLine(89, 31, 127, 31);
+  GLCD.DrawLine(88, 0, 88, 63);
+  GLCD.DrawLine(89, 36, 127, 36);
 }
 
 
@@ -72,8 +78,8 @@ void printCalender(int originDayOfWeek, int month, int currentDate, int year) {
         }
         GLCD.print(i  - originDayOfWeek + 1);
     }
-    GLCD.DrawRect(21, 54, 48, 8);
-    GLCD.CursorToXY(24, 56);
+    GLCD.DrawRect(23, 54, 50, 8);
+    GLCD.CursorToXY(26, 56);
 
     GLCD.print(currentDate);
     if (currentDate > 9) { 
@@ -123,6 +129,8 @@ displayClockInitPage() {
   printCurrentTime(currTime.hr24, currTime.mn, currTime.ss, true);
   printHumidity(92, 2);
   printPressure(92, 11);
+  printDewPoint(92, 30);
+  createLayout();
 }
 
 void displayClockPageOne() {
@@ -134,12 +142,14 @@ void displayClockPageOne() {
     printCalender(currTime.firstDayOfMonth, currTime.month, currTime.day, currTime.year);
     printHumidity(92, 2);
     printPressure(92, 11);
+    printDewPoint(92, 30);
+    createLayout();
   }
   printCurrentTime(currTime.hr24, currTime.mn, currTime.ss, true);
-  
   printHumidity(92, 2);
   printPressure(92, 11);
-  
+  printDewPoint(92, 30);
+  createLayout();
 }
 
 

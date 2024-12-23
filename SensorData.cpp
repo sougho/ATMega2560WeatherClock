@@ -9,7 +9,9 @@ BMPUtils bmpManager;
 DHT22Utils dht22ManagerPrimary(DHTPIN_PRIMARY);
 
 
-CurrentSensorData currentSensorData;
+SensorData currentSensorData;
+SensorData shortTermSensorTrend[24];
+
 void readSensors() {
 
   float t1 = 0;
